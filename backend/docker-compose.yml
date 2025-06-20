@@ -85,26 +85,26 @@ services:
             timeout: 5s
     frontend:
         build:
-            context: '../frontend'
-            dockerfile: Dockerfile
-        container_name: 'handmade-frontend'
-        image: 'sail-8.4/frontend'
+            context: '../frontend'    # ビルドコンテキスト（Dockerfileがある場所）
+            dockerfile: Dockerfile    # 使用するDockerfileの名前
+        container_name: 'handmade-frontend'  # コンテナに付ける名前
+        image: 'sail-8.4/frontend'          # 作成されるイメージ名
         ports:
-            - '3000:3000'
-        environment:
-        - NEXT_PUBLIC_API_URL=http://laravel.test
-        - NODE_ENV=development
-        - WATCHPACK_POLLING=true  # ホットリロード用
-        volumes:
-            - '../frontend:/app'
-            - '/app/node_modules'
-            - '/app/.next'
+            - '3000:3000'            # ホスト:コンテナのポートマッピング
+        environment:                 # コンテナ内の環境変数
+            - NEXT_PUBLIC_API_URL=http://laravel.test  # LaravelのAPIエンドポイント
+            - NODE_ENV=development   # Node.jsの実行環境
+            - WATCHPACK_POLLING=true # ファイル変更の監視方法
+        volumes:                     # ホストとコンテナのディレクトリ共有
+            - '../frontend:/app'     # フロントエンドのコード
+            - '/app/node_modules'    # node_modulesはコンテナ内で管理
+            - '/app/.next'           # Next.jsのビルドキャッシュ
         networks:
-            - sail
+            - sail                   # Sailネットワークに参加
         depends_on:
-            - laravel.test
-        stdin_open: true  # React開発サーバー用
-        tty: true
+            - laravel.test          # Laravelコンテナの起動を待つ
+        stdin_open: true            # 標準入力を開く（デバッグ用）
+        tty: true                   # 疑似TTYを割り当て
 
 networks:
     sail:
