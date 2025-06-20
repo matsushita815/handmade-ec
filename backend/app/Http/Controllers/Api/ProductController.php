@@ -32,7 +32,7 @@ class ProductController extends Controller
             $query->where('price', '<=', $request->input('max_price'));
         }
 
-        $products = $query->lastest()->paginate(12);
+        $products = $query->latest()->paginate(12);
 
         return response()->json($products);
     }
