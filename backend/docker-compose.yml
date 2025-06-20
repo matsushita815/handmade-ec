@@ -83,6 +83,29 @@ services:
                 - 'http://127.0.0.1:7700/health'
             retries: 3
             timeout: 5s
+    frontend:
+        build:
+            context: '../frontend'
+            dockerfile: Dockerfile
+        container_name: 'handmade-frontend'
+        image: 'sail-8.4/frontend'
+        ports:
+            - '3000:3000'
+        environment:
+        - NEXT_PUBLIC_API_URL=http://laravel.test
+        - NODE_ENV=development
+        - WATCHPACK_POLLING=true  # ホットリロード用
+        volumes:
+            - '../frontend:/app'
+            - '/app/node_modules'
+            - '/app/.next'
+        networks:
+            - sail
+        depends_on:
+            - laravel.test
+        stdin_open: true  # React開発サーバー用
+        tty: true
+
 networks:
     sail:
         driver: bridge
