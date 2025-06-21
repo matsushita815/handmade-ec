@@ -5,7 +5,6 @@ import ProductCard from "@/components/ProductCard";
 import ProductFilter from "@/components/ProductFilter";
 
 export default function Home() {
-console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
   const [ products, setProducts ] = useState([]);
   const [ categories, setCategories ] = useState([]);
   const [ loading, setLoading ] = useState(true);
@@ -30,13 +29,14 @@ console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
       });
 
       // APIから商品データを取得
-			const url = `${process.env.NEXT_PUBLIC_API_URL}/products?${params}`;
-      console.log('Fetching from:', url); // デバッグ用
+			const url = `/api/products?${params}`;;
+
     	const response = await fetch(url);
 
 			if (!response.ok) {
 				throw new Error(`HTTP error! status: ${response.status}`);
 			}
+
 			const data = await response.json();
 			console.log('Received data:', data); // デバッグ用      setProducts(data.products);
 
@@ -51,21 +51,21 @@ console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
 
   const fetchCategories = async() => {
     try {
-			const url = `${process.env.NEXT_PUBLIC_API_URL}/categories`;
-			console.log('Fetching categories from:', url); // デバッグ用
+			const url = `api/categories`;
 			
 			const response = await fetch(url);
 			
 			if (!response.ok) {
 				throw new Error(`HTTP error! status: ${response.status}`);
 			}
-			
+
 			const data = await response.json();
 			console.log('Received categories:', data); // デバッグ用
-				setCategories(data);
-			} catch (error) {
-				console.error('カテゴリーの取得に失敗しました:', error);
-			};
+
+			setCategories(data);
+		} catch (error) {
+			console.error('カテゴリーの取得に失敗しました:', error);
+		};
   }
 
   // 初回レンダリング
