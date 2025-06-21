@@ -30,10 +30,16 @@ console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
       });
 
       // APIから商品データを取得
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products?${params}`);
-      const data = await response.json();
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/products?${params}`;
+      console.log('Fetching from:', url); // デバッグ用
+    	const response = await fetch(url);
 
-      setProducts(data.products);
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+			const data = await response.json();
+			console.log('Received data:', data); // デバッグ用      setProducts(data.products);
+
       setCurrentPage(data.current_page);
       setTotalPages(data.last_page);
     } catch (error) {
@@ -45,13 +51,21 @@ console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
 
   const fetchCategories = async() => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
-      const data = await response.json();
-      setCategories(data);
-    } catch (error) {
-      console.error('カテゴリーの取得に失敗しました:', error);
-    };
-
+			const url = `${process.env.NEXT_PUBLIC_API_URL}/categories`;
+			console.log('Fetching categories from:', url); // デバッグ用
+			
+			const response = await fetch(url);
+			
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+			
+			const data = await response.json();
+			console.log('Received categories:', data); // デバッグ用
+				setCategories(data);
+			} catch (error) {
+				console.error('カテゴリーの取得に失敗しました:', error);
+			};
   }
 
   // 初回レンダリング

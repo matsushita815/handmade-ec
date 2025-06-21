@@ -92,7 +92,7 @@ services:
         ports:
             - '3000:3000'            # ホスト:コンテナのポートマッピング
         environment:                 # コンテナ内の環境変数
-            - NEXT_PUBLIC_API_URL=http://laravel.test  # LaravelのAPIエンドポイント
+            - NEXT_PUBLIC_API_URL=http://laravel  # LaravelのAPIエンドポイント
             - NODE_ENV=development   # Node.jsの実行環境
             - WATCHPACK_POLLING=true # ファイル変更の監視方法
         volumes:                     # ホストとコンテナのディレクトリ共有
