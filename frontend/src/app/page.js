@@ -1,103 +1,156 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useEffect, use } from "react"; 
+import ProductCard from "@/components/ProductCard";
+import ProductFilter from "@/components/ProductFilter";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
+  const [ products, setProducts ] = useState([]);
+  const [ categories, setCategories ] = useState([]);
+  const [ loading, setLoading ] = useState(true);
+  const [ currentpage, setCurrentPage ] = useState(1);
+  const [ totalPages, setTotalPages ] = useState(1);
+  const [ filters, setFilters ] = useState({
+    category: '',
+    search: '',
+    min_price: '',
+    max_price: '',
+  });
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  const fetchProducts = async (page = 1) => {
+    setLoading(true);
+    try {
+      // 空文字のフィルターは除外してクエリ文字列を構築
+      const params = new URLSearchParams({
+        page: page,
+        ...Object.fromEntries(
+          Object.entries(filters).filter(([_, value]) => value !== '')
+        )
+      });
+
+      // APIから商品データを取得
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products?${params}`);
+      const data = await response.json();
+
+      setProducts(data.products);
+      setCurrentPage(data.current_page);
+      setTotalPages(data.last_page);
+    } catch (error) {
+      console.error('商品データの取得に失敗しました:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCategories = async() => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
+      const data = await response.json();
+      setCategories(data);
+    } catch (error) {
+      console.error('カテゴリーの取得に失敗しました:', error);
+    };
+
+  }
+
+  // 初回レンダリング
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  // 商品フィルターの変更時に商品を再取得
+  useEffect(() => {
+    fetchProducts(1); // ページを1にリセット
+  }, [filters]);
+
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+  };
+
+  const handlePageChange = (page) => {
+    fetchProducts(page);
+  };
+
+  return (
+    <>
+      <div className="min-h-screen bg-gray-50">
+        <div className="container mx-auto px-4 py-8">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">商品一覧</h1>
+            <p className="text-gray-600">お気に入りの商品を見つけてください</p>
+          </div>
+
+          {/* フィルター */}
+          <div className="mb-8">
+            <ProductFilter 
+              categories={categories}
+              filters={filters}
+              onFilterChange={handleFilterChange}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
+
+          {/* 商品一覧 */}
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+                {products.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+
+              {/* 商品が見つからない場合 */}
+              {products.length === 0 && (
+                <div className="text-center py-12">
+                  <p className="text-gray-500 text-lg">商品が見つかりませんでした</p>
+                </div>
+              )}
+
+              {/* ページネーション */}
+              {totalPages > 1 && (
+                <div className="flex justify-center space-x-2">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    前へ
+                  </button>
+                  
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    const page = i + Math.max(1, currentPage - 2);
+                    return page <= totalPages ? (
+                      <button
+                        key={page}
+                        onClick={() => handlePageChange(page)}
+                        className={`px-4 py-2 border rounded-md text-sm font-medium ${
+                          currentPage === page
+                            ? 'bg-blue-600 text-white border-blue-600'
+                            : 'text-gray-700 bg-white border-gray-300 hover:bg-gray-50'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    ) : null;
+                  })}
+                  
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    次へ
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </div>   
+    </>
   );
 }
