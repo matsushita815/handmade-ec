@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, use } from "react"; 
+import { useState, useEffect } from "react"; 
 import ProductCard from "@/components/ProductCard";
 import ProductFilter from "@/components/ProductFilter";
 
@@ -8,7 +8,7 @@ export default function Home() {
   const [ products, setProducts ] = useState([]);
   const [ categories, setCategories ] = useState([]);
   const [ loading, setLoading ] = useState(true);
-  const [ currentpage, setCurrentPage ] = useState(1);
+  const [ currentPage, setCurrentPage ] = useState(1);
   const [ totalPages, setTotalPages ] = useState(1);
   const [ filters, setFilters ] = useState({
     category: '',
@@ -38,8 +38,9 @@ export default function Home() {
 			}
 
 			const data = await response.json();
-			console.log('Received data:', data); // デバッグ用      setProducts(data.products);
-
+			console.log('Received data:', data); // デバッグ用      
+			
+			setProducts(data.data);
       setCurrentPage(data.current_page);
       setTotalPages(data.last_page);
     } catch (error) {
