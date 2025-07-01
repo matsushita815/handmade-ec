@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, priority = false }) {
   const formatPrice = (price) => {
     return new Intl.NumberFormat('ja-JP', {
       style: 'currency',
@@ -27,6 +27,7 @@ export default function ProductCard({ product }) {
               alt={product.name}
               width={300}
               height={300}
+              priority={priority}
               className="h-48 w-full object-cover object-center group-hover:opacity-75"
             />
           ) : (
