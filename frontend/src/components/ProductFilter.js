@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function ProductFilter({ categories, filters, onFilterChange }) {
   const [localFilters, setLocalFilters] = useState(filters);
@@ -9,8 +9,17 @@ export default function ProductFilter({ categories, filters, onFilterChange }) {
       [key]: value,
     };
     setLocalFilters(newFilters);
-    onFilterChange(newFilters);
   }
+
+  // 500msの遅延を設定して、入力が完了した後にフィルターを更新
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      onFilterChange(localFilters);
+    }, 500); 
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [localFilters, onFilterChange]);
 
   const handleReset = () => {
     const resetFilters = {
