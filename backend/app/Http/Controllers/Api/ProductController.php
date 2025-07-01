@@ -34,6 +34,16 @@ class ProductController extends Controller
 
         $products = $query->orderBy('id', 'asc')->paginate(12);
 
+        // 画像のURLを整形
+        $products->getCollection()->transform(function ($product) {
+            if (is_array($product->images)) {
+                $product->images = array_map(function ($image) {
+                    return ['url' => $image];
+                }, $product->images);
+            }
+            return $product;
+        });
+
         return response()->json($products);
     }
 
