@@ -95,10 +95,17 @@ services:
             - NEXT_PUBLIC_API_URL=http://laravel.test  # LaravelのAPIエンドポイント
             - NODE_ENV=development   # Node.jsの実行環境
             - WATCHPACK_POLLING=true # ファイル変更の監視方法
-        volumes:                     # ホストとコンテナのディレクトリ共有
-            - '../frontend:/app'     # フロントエンドのコード
-            - '/app/node_modules'    # node_modulesはコンテナ内で管理
-            - '/app/.next'           # Next.jsのビルドキャッシュ
+        volumes:
+            - '../frontend/src:/app/src'
+            - '../frontend/public:/app/public'
+            - '../frontend/package.json:/app/package.json'
+            - '../frontend/package-lock.json:/app/package-lock.json'
+            - '../frontend/next.config.mjs:/app/next.config.mjs'
+            - '../frontend/postcss.config.mjs:/app/postcss.config.mjs'
+            - '../frontend/jsconfig.json:/app/jsconfig.json'
+            - '../frontend/eslint.config.mjs:/app/eslint.config.mjs'
+            - '/app/node_modules'
+            - '/app/.next'
         networks:
             - sail                   # Sailネットワークに参加
         depends_on:
