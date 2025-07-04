@@ -74,8 +74,13 @@ class ProductController extends Controller
      */
     public function show(Product $product): JsonResponse
     {
-        return response()->json($product);
+        if (is_array($product->images)) {
+            $product->images = array_map(function ($image) {
+                return ['url' => $image];
+            }, $product->images);
+        }
 
+        return response()->json($product);
     }
 
     /**
