@@ -1,77 +1,140 @@
-# Project Overview
+# システム起動時のルール
 
-This is a web application with a Laravel backend and a Next.js frontend.
+1. **「最初に必ず `Gemini.md` を読みます」**と宣言すること。
+2. `Gemini.md` の内容を**毎回CLI起動時に再読み込み**すること（キャッシュ禁止）。
+3. AIはユーザーの学習を支援する補助的存在であり、**ユーザーが主導**で進めること。
+4. 出力の際は、ユーザーが理解・判断・応用しやすいように、**段階的かつ明示的**に提案・選択肢を出すこと。
+5. AIは**勝手に最終結論を出さない**。常に「ここで一旦止まります」「次に進めてよろしいですか？」など、ユーザーに判断を委ねる。
+6. `Gemini.md` に記述されている原則や手順を**優先的に参照**し、それに従うこと。
+7. `Gemini.md` に矛盾があった場合はそのまま指摘し、**勝手に解釈・修正しない**。
 
-## How to Start the Application
+## 学習の目的
+このAIシステムは、CLIを通じて段階的に学習を支援します。ユーザーが自分で考えることを最優先とします。
 
-The entire application is managed by Docker Compose and Laravel Sail. To start the development environment, follow these steps:
+## 学習スタイル
+- Step-by-step に進む
+- 質問と選択肢で理解を深める
+- AIはファシリテーターに徹する
 
-1.  Navigate to the `backend` directory:
+## 禁止事項（AIへの指針）
+- 勝手な結論
+- 推論の飛躍
+- 曖昧な指示で前に進めること
+  
+
+# プロジェクト概要
+
+✅【実装機能一覧 & やることリスト】
+🧩 第1段階：基本機能 (1-2週間)
+🔧 実装機能
+商品一覧 / 詳細ページ
+
+商品登録・編集・削除（管理者）
+
+商品検索・フィルタリング
+
+ユーザー登録 / ログイン / プロフィール編集 / パスワードリセット
+
+✅ やることリスト
+ Laravel：Model・Migration・Controller作成 (Product, User)
+
+ Laravel：API Resource・Validation実装
+
+ Laravel：CORS & API設定
+
+ React：Next.js + Tailwind セットアップ
+
+ React：商品一覧ページ実装
+
+ React：商品詳細・検索・フィルタUI作成
+
+ React：React Hook Form でフォーム構築
+
+🛒 第2段階：EC機能 (2-3週間)
+🔧 実装機能
+カート追加・削除・数量変更
+
+注文処理（確認、配送情報入力）
+
+注文履歴表示
+
+✅ やることリスト
+ Laravel：Order, Cart, Address モデル作成
+
+ Laravel：トランザクション処理・メール送信・Queue設定
+
+ React：useReducer や Zustand でカート状態管理
+
+ React：注文フローのUI構築（多段階フォーム）
+
+ React：注文履歴画面作成
+
+💳 第3段階：高度機能 (3-4週間)
+🔧 実装機能
+Stripe決済 / 領収書発行
+
+管理機能（売上分析・在庫管理・顧客管理）
+
+商品レビュー・評価投稿・管理
+
+✅ やることリスト
+ Laravel：Stripe API連携（Webhook含む）
+
+ Laravel：Role & Permission設定
+
+ Laravel：レビュー、在庫、売上集計処理
+
+ React：Rechartsでデータ可視化
+
+ React：レビュー投稿・表示・管理画面UI実装
+
+ React：画像アップロード（Cloudinary）
+
+🚀 第4段階：プロダクション対応 (2-3週間)
+🔧 実装機能
+遅延読み込み・画像最適化
+
+ページネーション・キャッシュ
+
+セキュリティ強化
+
+ログ管理・バックアップ・メンテナンス
+
+✅ やることリスト
+ Laravel：CSRF, XSS, SQL対策 / ログ設定
+
+ Laravel：バックアップ / メンテナンスモード導入
+
+ React：Next.jsのSEO・遅延ロード実装
+
+ React：ページネーション & キャッシュ制御
+
+ デプロイ：Vercel (Frontend) + Heroku/AWS (Backend/API)
+
+🗂️ まとめ
+フェーズ	期間目安	主要機能	主な学習ポイント
+第1段階	1-2週	CRUD & 認証	API連携, バリデーション
+第2段階	2-3週	カート, 注文	状態管理, トランザクション
+第3段階	3-4週	決済, 管理, レビュー	Stripe, 分析, 権限管理
+第4段階	2-3週	最適化 & 運用	SEO, セキュリティ, ログ管理
+
+
+
+## アプリケーションの起動方法
+
+アプリケーション全体はDocker ComposeとLaravel Sailによって管理されています。開発環境を起動するには、次の手順に従ってください。
+
+1.  `backend`ディレクトリに移動します。
     ```bash
     cd backend
     ```
 
-2.  Build and start all services using Laravel Sail:
+2.  Laravel Sailを使用してすべてのサービスをビルドして起動します。
     ```bash
     ./vendor/bin/sail up -d --build
     ```
 
-## Access URLs
+## アクセスURL
 
-*   **Frontend:** [http://localhost:3000](http://localhost:3000)
-*   **Backend (API):** [http://localhost](http://localhost) (The frontend container accesses the backend at `http://laravel.test`)
-
-## トラブルシューティング
-
-### 現象
-
-フロントエンドのコンテナ(`handmade-frontend`)が正常に起動せず、`Module not found: Can't resolve 'lucide-react'`のようなエラーがブラウザのコンソールやコンテナのログに表示される。
-
-### 原因と解決策
-
-この問題の根本的な原因は、`backend/docker-compose.yml`で定義されているDockerの**ボリュームマウント設定**にありました。以下にその詳細と解決策を記します。
-
-#### なぜボリュームの除外指定が機能しなかったのか？
-
-当初、以下のようなボリューム設定がされていました。
-
-```yaml
-# 問題のあった設定
-volumes:
-  - '../frontend:/app'      # ホストのディレクトリ全体をマウント
-  - '/app/node_modules'     # node_modulesを除外する意図の記述
-```
-
-この設定が期待通りに機能しない理由は、Dockerのビルド時と実行時の処理順序と、バインドマウントの性質にあります。
-
-1.  **ビルド時 (`docker build`)**: `Dockerfile`の`RUN npm ci`により、コンテナの**イメージ内**には`/app/node_modules`が正しく作成されます。
-2.  **実行時 (`docker-compose up`)**: 
-    - まず、`volumes`の`- '../frontend:/app'`（バインドマウント）が適用されます。これにより、ホスト側（`node_modules`が存在しない）の`frontend`ディレクトリが、コンテナ内の`/app`ディレクトリを完全に上書きします。この時点で、ビルド時に作成された`/app/node_modules`は隠されてしまいます。
-    - 次に、`- '/app/node_modules'`の記述が評価されますが、元となるべきイメージ内の`node_modules`が既に隠されているため、結果として空のボリュームがマウントされてしまいます。
-
-**記述順序を入れ替えても解決しない理由:**
-
-たとえ`volumes`の記述順序を`- '/app/node_modules'`を先にしたとしても、その後に続く`- '../frontend:/app'`というバインドマウントが、コンテナの`/app`ディレクトリ全体をホストの`../frontend`の内容で「覆い隠してしまう」ため、結果は同じになります。バインドマウントは、コンテナ内の既存のコンテンツを直接「隠す」または「上書きする」性質を持つため、この問題が発生します。
-
-これが、コンテナ起動後に依存関係が見つからずにクラッシュしていた原因です。
-
-#### 最終的な解決策
-
-この問題を解決するため、ホストのディレクトリ全体をマウントするのをやめ、**開発に必要なディレクトリと設定ファイルだけを個別にマウントする**方式に変更しました。
-
-```yaml
-# 現在の正しい設定
-volumes:
-    - '../frontend/src:/app/src'
-    - '../frontend/public:/app/public'
-    - '../frontend/package.json:/app/package.json'
-    - '../frontend/package-lock.json:/app/package-lock.json'
-    - '../frontend/next.config.mjs:/app/next.config.mjs'
-    - '../frontend/postcss.config.mjs:/app/postcss.config.mjs'
-    - '../frontend/jsconfig.json:/app/jsconfig.json'
-    - '../frontend/eslint.config.mjs:/app/eslint.config.mjs'
-    - '/app/node_modules' # コンテナ内のnode_modulesを維持するための名前なしボリューム
-    - '/app/.next'      # コンテナ内の.nextを維持するための名前なしボリューム
-```
-
-この設定により、コンテナの`/app`ディレクトリ自体はイメージビルド時の状態が維持されるため、`node_modules`が消えることはありません。その上で、`src`などの開発に必要なディレクトリだけがホストと同期されるため、ホットリロードも問題なく機能します。
+*   **フロントエンド:** [http://localhost:3000](http://localhost:3000)
+*   **バックエンド (API):** [http://localhost](http://localhost) (フロントエンドコンテナは `http://laravel.test` でバックエンドにアクセスします)
