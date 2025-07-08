@@ -98,53 +98,29 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 特徴セクション */}
-      <section className="py-20 bg-gray-50">
+      {/* 物語のあるものづくりセクション */}
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              私たちのこだわり
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              一つ一つの作品に込めた、作り手の想いと物語
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Brush className="text-blue-600" size={32} />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                唯一無二のデザイン
-              </h3>
-              <p className="text-gray-600">
-                トレンドを取り入れつつも、作家一人ひとりの個性が光る、他にはないデザイン。あなたの日常を、ほんの少し特別なものにします。
-              </p>
+          <div className="flex flex-col md:flex-row gap-12 lg:gap-24 items-center">
+            <div className="w-full md:w-1/2">
+              <img src="/about/story-main.jpg" alt="物語のあるものづくり" className="rounded-lg shadow-lg w-full h-auto object-cover aspect-square" />
             </div>
-
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Leaf className="text-green-600" size={32} />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                厳選された自然素材
+            <div className="w-full md:w-1/2">
+              <h3 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
+                すべての作品に、物語を。
               </h3>
-              <p className="text-gray-600">
-                肌に触れるものだから、素材には徹底的にこだわりました。作り手が世界中から厳選した、高品質で環境にも優しい素材を使用しています。
+              <p className="text-gray-600 leading-relaxed mb-4">
+                私たちの作るものには、一つひとつに作り手の想いやインスピレーションの源となったストーリーがあります。それは旅の記憶かもしれませんし、愛する人への贈り物かもしれません。
               </p>
-            </div>
-
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <BookOpen className="text-purple-600" size={32} />
+              <p className="text-gray-600 leading-relaxed mb-8">
+                単なる「モノ」としてではなく、その背景にある温かい物語も一緒にお届けすることで、あなたの日常がより豊かになることを願っています。
+              </p>
+              <div className="text-center md:text-left">
+                <Link href="/about"
+                  className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                  私たちの物語をもっと知る
+                </Link>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                物語のあるものづくり
-              </h3>
-              <p className="text-gray-600">
-                すべての作品には、作り手の情熱やインスピレーションの源となった物語があります。作品と共に、その背景にあるストーリーもお届けします。
-              </p>
             </div>
           </div>
         </div>
@@ -227,6 +203,34 @@ export default function HomePage() {
               すべてのカテゴリーを見る
               <ArrowRight size={20} />
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* デザインと素材セクション */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row-reverse items-center gap-12 lg:gap-24">
+            <div className="w-full md:w-1/2">
+              <img src="/about/design-main.jpg" alt="デザインと素材" className="rounded-lg shadow-lg w-full h-auto object-cover aspect-square" />
+            </div>
+            <div className="w-full md:w-1/2">
+              <h3 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
+                デザインと素材への、深いこだわり。
+              </h3>
+              <p className="text-gray-600 leading-relaxed mb-4">
+                トレンドを意識しつつも、ありきたりなデザインで終わらせない。作家一人ひとりの世界観が色濃く反映された、ユニークなデザインが私たちの誇りです。
+              </p>
+              <p className="text-gray-600 leading-relaxed mb-8">
+                また、作品に使うのは、作り手自らが世界中を旅して見つけ出した、高品質な自然素材のみ。見て、触れて、心から満足していただける品質を追求しています。
+              </p>
+              <div className="text-center md:text-left">
+                <Link href="/products"
+                  className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                  すべての作品を見る
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
